@@ -25,7 +25,7 @@ export default function Dashboard({ children }) {
     if (!token) {
       router.push("/");
     }
-  }, []);
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.clear("token");
@@ -117,7 +117,7 @@ export default function Dashboard({ children }) {
           </DropdownMenu>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-         {children}
+          {children}
         </main>
       </div>
     </div>
