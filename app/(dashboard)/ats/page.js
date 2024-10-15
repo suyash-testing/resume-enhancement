@@ -40,11 +40,14 @@ const ATSCheckerPage = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("jd", jd);
-
+    const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/api/ats`, {
+      const response = await fetch(`/api/ats`, {
         method: "POST",
         body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {

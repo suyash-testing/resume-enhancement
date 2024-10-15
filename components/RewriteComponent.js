@@ -36,7 +36,7 @@ export default function RewriteComponent() {
     }
 
     setLoading(true);
-
+    const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("templateOption", templateOption);
@@ -46,6 +46,9 @@ export default function RewriteComponent() {
       const response = await fetch("/api/resume-rewrite", {
         method: "POST",
         body: formData,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {

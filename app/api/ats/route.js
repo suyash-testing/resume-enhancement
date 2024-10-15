@@ -4,8 +4,36 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { RunnableSequence } from "@langchain/core/runnables";
+import jwt from "jsonwebtoken";
+import { headers } from "next/headers";
 
 export const POST = async (req, res) => {
+  const token = headers().get("Authorization");
+
+  if (!token) {
+    return NextResponse.json({ error: "Please login" }, { status: 401 });
+  }
+
+  const newToken  = token.split(" ")?.[1]
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(newToken, process.env.JWT_SECRET);
+    console.log(decodedToken,'dddd')
+  } catch (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 401 }
+    );
+  }
+
+  const { email, password } = decodedToken;
+
+  if (email !== process.env.EMAIL || password !== process.env.PASSWORD) {
+    return NextResponse.json(
+      { error: "Unauthorized: Invalid email or password" },
+      { status: 401 }
+    );
+  }
   try {
     const data = await req.formData();
     const file = data.get("file");

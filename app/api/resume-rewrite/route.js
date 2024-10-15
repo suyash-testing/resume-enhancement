@@ -6,8 +6,37 @@ import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { generateDocx as generateTemplate1 } from "@/templates/template1";
 import { generateDocx as generateTemplate2 } from "@/templates/template2";
 import { ChatOpenAI } from "@langchain/openai";
+import jwt from "jsonwebtoken";
+import { headers } from "next/headers";
 
 export const POST = async (req, res) => {
+  const token = headers().get("Authorization");
+
+  if (!token) {
+    return NextResponse.json({ error: "Please login" }, { status: 401 });
+  }
+
+  const newToken  = token.split(" ")?.[1]
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(newToken, process.env.JWT_SECRET);
+    console.log(decodedToken,'dddd')
+  } catch (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 401 }
+    );
+  }
+
+  const { email, password } = decodedToken;
+
+  if (email !== process.env.EMAIL || password !== process.env.PASSWORD) {
+    return NextResponse.json(
+      { error: "Unauthorized: Invalid email or password" },
+      { status: 401 }
+    );
+  }
+
   try {
     const data = await req.formData();
     const file = data.get("file");
@@ -18,7 +47,6 @@ export const POST = async (req, res) => {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Convert Blob to Buffer
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
     // Create an instance of PdfReader and wrap in a Promise to handle asynchronously
