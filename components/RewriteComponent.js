@@ -47,7 +47,7 @@ export default function RewriteComponent() {
         method: "POST",
         body: formData,
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -121,11 +121,10 @@ export default function RewriteComponent() {
             />
           </div>
 
-          <div className="mt-4">
-            <Label className="block text-gray-700 text-lg font-semibold mb-2">
+          {/* <Label className="block text-gray-700 text-lg font-semibold mb-2">
               Choose a Template
-            </Label>
-            <RadioGroup value={templateOption}>
+            </Label> */}
+          {/* <RadioGroup value={templateOption}>
               <div className="flex items-center space-x-4">
                 <label className="inline-flex items-center">
                   <input
@@ -150,8 +149,7 @@ export default function RewriteComponent() {
                   <span className="ml-2 text-gray-700">Template Two</span>
                 </label>
               </div>
-            </RadioGroup>
-          </div>
+            </RadioGroup> */}
 
           <div className="mt-4">
             <Label className="block text-gray-700 text-lg font-semibold mb-2">
@@ -175,11 +173,12 @@ export default function RewriteComponent() {
                     type="radio"
                     id="chatgpt"
                     value="chatgpt"
+                    disabled={true}
                     checked={modelOption === "chatgpt"}
                     onChange={() => setModelOption("chatgpt")}
                     className="form-radio text-purple-600"
                   />
-                  <span className="ml-2 text-gray-700">ChatGPT</span>
+                  <span className="ml-2 text-gray-200">ChatGPT</span>
                 </label>
               </div>
             </RadioGroup>

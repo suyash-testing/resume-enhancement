@@ -20,7 +20,6 @@ export const POST = async (req, res) => {
   let decodedToken;
   try {
     decodedToken = jwt.verify(newToken, process.env.JWT_SECRET);
-    console.log(decodedToken,'dddd')
   } catch (error) {
     return NextResponse.json(
       { error: error.message },
