@@ -15,14 +15,12 @@ export default function RewriteComponent() {
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      if (selectedFile.type !== "application/pdf") {
-        setError("Please select a PDF file.");
-        setFile(null);
-        event.target.value = null;
-      } else {
-        setError(null);
-        setFile(selectedFile);
-      }
+      setError(null);
+      setFile(selectedFile);
+    } else {
+      setError("Please select a PDF or doc file.");
+      setFile(null);
+      event.target.value = null;
     }
   };
 
@@ -112,7 +110,7 @@ export default function RewriteComponent() {
             <Input
               id="file-upload"
               type="file"
-              accept=".pdf"
+              accept=".pdf, .doc, .docx"
               onChange={handleFileChange}
               disabled={loading}
               className={`w-full border border-gray-300 p-3 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-purple-600 ${
