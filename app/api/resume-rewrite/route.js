@@ -8,6 +8,7 @@ import { generateDocx as generateTemplate2 } from "@/templates/template2";
 import { ChatOpenAI } from "@langchain/openai";
 import jwt from "jsonwebtoken";
 import { headers } from "next/headers";
+import mammoth from "mammoth";
 
 export const POST = async (req, res) => {
   const token = headers().get("Authorization");
@@ -16,15 +17,12 @@ export const POST = async (req, res) => {
     return NextResponse.json({ error: "Please login" }, { status: 401 });
   }
 
-  const newToken  = token.split(" ")?.[1]
+  const newToken = token.split(" ")?.[1];
   let decodedToken;
   try {
     decodedToken = jwt.verify(newToken, process.env.JWT_SECRET);
   } catch (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 401 });
   }
 
   const { email, password } = decodedToken;
@@ -48,30 +46,20 @@ export const POST = async (req, res) => {
 
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-    // Create an instance of PdfReader and wrap in a Promise to handle asynchronously
-    const extractedText = await new Promise((resolve, reject) => {
-      let text = "";
-      const pdfReader = new PdfReader();
+    const fileName = file.name;
 
-      // Use `PdfReader` to parse the buffer
-      pdfReader.parseBuffer(fileBuffer, (err, item) => {
-        if (err) {
-          console.error("Error in PDF reader:", err);
-          return reject(err);
-        }
+    let extractedText = "";
 
-        if (!item) {
-          // End of file
-          return resolve(text);
-        }
-
-        if (item.text) {
-          // Concatenate the extracted text
-          text += item.text + " ";
-        }
-      });
-    });
-
+    if (fileName.endsWith(".pdf")) {
+      extractedText = await extractTextFromPDF(fileBuffer);
+    } else if (fileName.endsWith(".docx")) {
+      extractedText = await extractTextFromDocx(fileBuffer);
+    } else {
+      return NextResponse.json(
+        { error: "Unsupported file format" },
+        { status: 400 }
+      );
+    }
     const result = await getStructureData(extractedText, model);
 
     let docBuffer;
@@ -83,16 +71,15 @@ export const POST = async (req, res) => {
     }
 
     const base64Doc = docBuffer.toString("base64");
-    // Return the extracted text as a JSON response
     return NextResponse.json({
       data: result,
-      file: base64Doc, // Base64 encoded document file
+      file: base64Doc,
       fileName: `${result?.name}_resume.docx`,
     });
   } catch (error) {
     console.error("Error processing PDF:", error);
     return NextResponse.json(
-      { error: "Error processing PDF" },
+      { error: "Error processing file" },
       { status: 500 }
     );
   }
@@ -132,10 +119,9 @@ const getStructureData = async (extractedText, model) => {
       }},
       "workExperience": [
         {{
-          "Organization": "Organization Name",
           "Client": "Client Name",
           "role": "Job Role",
-          "duration": "Start Date - End Date",
+          "duration": "Duration in Months like 12 Months or 09 Months",
           "responsibilities": [
             "Roles and Responsibilities"
           ]
@@ -146,7 +132,7 @@ const getStructureData = async (extractedText, model) => {
           "project": "Project Name",
           "Client": "Client Name",
           "role": "Role in Project",
-          "duration": "Duration in Months",
+          "duration": "Duration in Months like 12 Months or 09 Months",
           "description": "Project Description",
           "toolsUsed": ["Tool1", "Tool2"],
           "responsibilities": [
@@ -172,7 +158,6 @@ const getStructureData = async (extractedText, model) => {
     }}
     
     Instructions:
-          
     - **If any sentence in the professional summary  is short (less than 10 words), expand it by adding more details to make it more descriptive and professional.**
     -If the professional summary is short (fewer than 5 bullet points), expand it by adding more bullet points based on the resume's experience and skills.
         - **Do not modify, shorten, or delete a detailed professional summary that has 5 or more bullet points.**
@@ -201,5 +186,42 @@ const getStructureData = async (extractedText, model) => {
     return response;
   } catch (error) {
     console.log("error form llm model", error);
+  }
+};
+
+const extractTextFromPDF = async (fileBuffer) => {
+  return new Promise((resolve, reject) => {
+    let text = "";
+    const pdfReader = new PdfReader();
+
+    pdfReader.parseBuffer(fileBuffer, (err, item) => {
+      if (err) {
+        console.error("Error in PDF reader:", err);
+        return reject(err);
+      }
+
+      if (!item) {
+        return resolve(text);
+      }
+
+      if (item.text) {
+        text += item.text + " ";
+      }
+    });
+  });
+};
+
+const extractTextFromDocx = async (fileBuffer) => {
+  try {
+    const result = await mammoth.extractRawText({ buffer: fileBuffer });
+
+    const text = result.value;
+
+    if (result.messages.length > 0) {
+      console.log("Conversion Messages: ", result.messages);
+    }
+    return text;
+  } catch (error) {
+    console.error("Error extracting text: ", error);
   }
 };
