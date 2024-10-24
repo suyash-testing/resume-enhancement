@@ -8,7 +8,7 @@ import { generateDocx as generateTemplate2 } from "@/templates/template2";
 import { ChatOpenAI } from "@langchain/openai";
 import jwt from "jsonwebtoken";
 import { headers } from "next/headers";
-import mammoth  from "mammoth";
+import mammoth from "mammoth";
 
 export const POST = async (req, res) => {
   const token = headers().get("Authorization");
@@ -59,7 +59,7 @@ export const POST = async (req, res) => {
         { error: "Unsupported file format" },
         { status: 400 }
       );
-    } 
+    }
     const result = await getStructureData(extractedText, model);
 
     let docBuffer;
@@ -73,7 +73,7 @@ export const POST = async (req, res) => {
     const base64Doc = docBuffer.toString("base64");
     return NextResponse.json({
       data: result,
-      file: base64Doc, 
+      file: base64Doc,
       fileName: `${result?.name}_resume.docx`,
     });
   } catch (error) {
@@ -119,10 +119,9 @@ const getStructureData = async (extractedText, model) => {
       }},
       "workExperience": [
         {{
-          "Organization": "Organization Name",
           "Client": "Client Name",
           "role": "Job Role",
-          "duration": "Start Date - End Date",
+          "duration": "Duration in Months like 12 Months or 09 Months",
           "responsibilities": [
             "Roles and Responsibilities"
           ]
@@ -133,7 +132,7 @@ const getStructureData = async (extractedText, model) => {
           "project": "Project Name",
           "Client": "Client Name",
           "role": "Role in Project",
-          "duration": "Duration in Months",
+          "duration": "Duration in Months like 12 Months or 09 Months",
           "description": "Project Description",
           "toolsUsed": ["Tool1", "Tool2"],
           "responsibilities": [
