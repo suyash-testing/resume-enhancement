@@ -133,7 +133,7 @@ const getStructureData = async (extractedText, model) => {
           "project": "Project Name",
           "client": "Client Name",
           "role": "Role in Project",
-          "duration": "Duration in Months",
+          "duration": "Duration in Months like 12 Months or 09 Months",
           "description": "Project Description",
           "toolsUsed": ["Tool1", "Tool2"],
           "responsibilities": [
