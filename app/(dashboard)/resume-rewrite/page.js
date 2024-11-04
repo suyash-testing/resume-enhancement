@@ -3,9 +3,9 @@ import React from "react";
 
 const ResumeRewritePage = () => {
   return (
-    <div>
+    <>
       <RewritComponent />
-    </div>
+    </>
   );
 };
 

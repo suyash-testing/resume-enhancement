@@ -8,7 +8,7 @@ import { generateDocx as generateTemplate2 } from "@/templates/template2";
 import { ChatOpenAI } from "@langchain/openai";
 import jwt from "jsonwebtoken";
 import { headers } from "next/headers";
-import mammoth  from "mammoth";
+import mammoth from "mammoth";
 
 export const POST = async (req, res) => {
   const token = headers().get("Authorization");
@@ -59,7 +59,7 @@ export const POST = async (req, res) => {
         { error: "Unsupported file format" },
         { status: 400 }
       );
-    } 
+    }
     const result = await getStructureData(extractedText, model);
 
     let docBuffer;
@@ -73,7 +73,7 @@ export const POST = async (req, res) => {
     const base64Doc = docBuffer.toString("base64");
     return NextResponse.json({
       data: result,
-      file: base64Doc, 
+      file: base64Doc,
       fileName: `${result?.name}_resume.docx`,
     });
   } catch (error) {
@@ -120,9 +120,9 @@ const getStructureData = async (extractedText, model) => {
       "workExperience": [
         {{
           "Organization": "Organization Name",
-          "Client": "Client Name",
+          "client": "Client Name",
           "role": "Job Role",
-          "duration": "Start Date - End Date",
+          "duration": "duration in months",
           "responsibilities": [
             "Roles and Responsibilities"
           ]
@@ -131,7 +131,7 @@ const getStructureData = async (extractedText, model) => {
       "projects": [
         {{
           "project": "Project Name",
-          "Client": "Client Name",
+          "client": "Client Name",
           "role": "Role in Project",
           "duration": "Duration in Months",
           "description": "Project Description",
@@ -156,6 +156,7 @@ const getStructureData = async (extractedText, model) => {
           "date": ""
         }}
       ]
+        "achievements": ["add achievements or core competencies or extra activities"]
     }}
     
     Instructions:
@@ -173,6 +174,7 @@ const getStructureData = async (extractedText, model) => {
           **If any responsibility bullet point is short (less than 10 words), expand it to provide more detail and make it more professional.**
             - "Responsibilities" should be a list of bullet points accurately reflecting the candidate's duties and achievements.
           - "Tools Used"  should be a list of technologies and tools used in the project.
+          If achievements section add achievements of candidate or core competencies or extra activities.
         - Ensure the extracted information is well-structured and formatted as a valid JSON array.
         - Enclose all keys and string values in double quotes.
         - Validate that the JSON adheres to standard syntax.

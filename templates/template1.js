@@ -279,7 +279,7 @@ export const generateDocx = async (extractedData) => {
                       font: "Calibri",
                     }),
                     new TextRun({
-                      text: exp?.duration,
+                      text: exp?.duration + ' ' + 'Months',
                       size: 22,
                       font: "Calibri",
                     }),
@@ -384,6 +384,23 @@ export const generateDocx = async (extractedData) => {
                   ],
                 })
               : null,
+            proj?.client
+              ? new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: "Client: ",
+                      bold: true,
+                      size: 22,
+                      font: "Calibri",
+                    }),
+                    new TextRun({
+                      text: proj?.client,
+                      size: 22,
+                      font: "Calibri",
+                    }),
+                  ],
+                })
+              : null,
             proj?.toolsUsed?.length > 0
               ? new Paragraph({
                   children: [
@@ -411,7 +428,7 @@ export const generateDocx = async (extractedData) => {
                       font: "Calibri",
                     }),
                     new TextRun({
-                      text: proj?.duration,
+                      text: proj?.duration +' ' +  'Months',
                       size: 22,
                       font: "Calibri",
                     }),
@@ -480,7 +497,7 @@ export const generateDocx = async (extractedData) => {
             ? new Paragraph({
                 spacing: {
                   after: 200,
-                  before: 200, 
+                  before: 200,
                 },
                 border: {
                   bottom: {
@@ -518,7 +535,7 @@ export const generateDocx = async (extractedData) => {
           extractedData?.certifications?.length
             ? new Paragraph({
                 spacing: {
-                  before: 200, 
+                  before: 200,
                 },
               })
             : null,
@@ -560,7 +577,55 @@ export const generateDocx = async (extractedData) => {
                 ],
               })
           ) || []),
+               // EDUCATION with border
+               extractedData?.achievements?.length
+               ? new Paragraph({
+                   spacing: {
+                     after: 200,
+                     before: 300,
+                   },
+                   border: {
+                     bottom: {
+                       color: "000000",
+                       space: 1,
+                       value: "single",
+                       size: 6,
+                     },
+                   },
+                   children: [
+                     new TextRun({
+                       text: "Achievements",
+                       bold: true,
+                       size: 22,
+                       font: "Arial",
+                     }),
+                   ],
+                 })
+               : null,
+               ...(extractedData?.achievements?.map(
+                (ache) =>
+                  new Paragraph({
+                    bullet: {
+                      level: 0,
+                    },
+                    children: [
+                      new TextRun({
+                        text: ache,
+                        size: 22,
+                        font: "Calibri",
+                      }),
+                    ],
+                  })
+              ) || []),
+              new Paragraph({
+                spacing: {
+                  before: 200,
+                },
+              }),
+
+               
         ].filter(Boolean),
+        
       },
     ],
   });
