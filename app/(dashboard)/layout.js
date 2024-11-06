@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
 
 export default function Dashboard({ children }) {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function Dashboard({ children }) {
   };
 
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="grid min-h-screen w-full md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Sidebar */}
       <div className="hidden border-r  bg-white  text-black shadow-xl md:block">
         <div className="flex h-full flex-col gap-2">
@@ -42,7 +43,7 @@ export default function Dashboard({ children }) {
               href="/"
               className="flex items-center gap-2 text-2xl font-bold text-black"
             >
-              <span>Vlink</span>
+              <Image src="/logopng.png" width={50} height={10} alt="logo" />
             </Link>
           </div>
           {/* Desktop Sidebar Navigation */}
@@ -57,7 +58,7 @@ export default function Dashboard({ children }) {
                 }`}
               >
                 <FileUser className="h-5 w-5 text-black" />
-                <span className="text-md">Rewrite</span>
+                <span className="text-md">Resume Rewrite</span>
               </Link>
               <Link
                 href="/ats"
@@ -101,7 +102,7 @@ export default function Dashboard({ children }) {
                   className="flex items-center gap-4 rounded-lg px-3 py-2 hover:bg-gray-100  transition"
                 >
                   <FileUser className="h-5 w-5" />
-                  Rewrite
+                  Resume Rewrite
                 </Link>
                 <Link
                   href="/ats"
@@ -130,8 +131,6 @@ export default function Dashboard({ children }) {
               align="end"
               className="bg-white shadow-lg rounded-lg"
             >
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="hover:bg-red-100 hover:text-red-500 transition font-medium text-red-500"
