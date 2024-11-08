@@ -68,7 +68,7 @@ const ATSCheckerPage = () => {
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl w-full space-y-8 bg-white bg-opacity-90 p-10 rounded-3xl shadow-xl">
         <div>
-          <h2 className="text-center text-4xl font-extrabold text-gray-900">
+          <h2 className="text-4xl font-bold mb-4 text-center text-indigo-700">
             ATS Resume Checker
           </h2>
           <p className="mt-2 text-center text-lg text-gray-600">

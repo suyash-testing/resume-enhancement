@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import LoadingComponent from "./LoadingComponent";
+import Image from "next/image";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -29,8 +30,8 @@ export default function Login() {
       const { token } = await response.json();
       localStorage.setItem("token", token);
       setError(null);
-      setLoading(false);
       router.push("/resume-rewrite");
+      setLoading(false);
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -38,9 +39,12 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-white p-10 rounded-2xl shadow-2xl w-full max-w-lg">
-      <p className="text-center text-xl font-semibold mb-6">
-        Please log in to your account
+    <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-lg">
+      <div className="flex justify-center items-center">
+        <Image src="/logopng.png" width={80} height={10} alt="logo" />
+      </div>
+      <p className="text-center text-indigo-700 text-2xl font-bold my-3">
+        Login To Your Account
       </p>
       <form onSubmit={handleLogin} className="space-y-6">
         <div>
@@ -83,7 +87,7 @@ export default function Login() {
         <Button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 mt-4 text-lg font-bold rounded-full transition duration-300 ${
+          className={`w-full py-5 mt-4 text-lg font-bold rounded-full transition duration-300 ${
             loading
               ? "bg-gray-300 cursor-not-allowed"
               : "bg-indigo-600 hover:bg-indigo-700 text-white"

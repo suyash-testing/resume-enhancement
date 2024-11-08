@@ -40,7 +40,7 @@ export default function Dashboard({ children }) {
         <div className="flex h-full flex-col gap-2">
           <div className="flex h-16 items-center border-b  px-6 lg:h-[70px]">
             <Link
-              href="/"
+              href="/resume-rewrite"
               className="flex items-center gap-2 text-2xl font-bold text-black"
             >
               <Image src="/logopng.png" width={50} height={10} alt="logo" />

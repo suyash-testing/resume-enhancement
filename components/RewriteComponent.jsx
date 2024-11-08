@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { toast } from "react-toastify";
+import LoadingComponent from "./LoadingComponent";
+import { useDropzone } from "react-dropzone";
 
 export default function RewriteComponent() {
   const [file, setFile] = useState(null);
@@ -13,24 +14,32 @@ export default function RewriteComponent() {
   const [templateOption, setTemplateOption] = useState("1");
   const [modelOption, setModelOption] = useState("gemini");
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
+  const onDrop = (acceptedFiles) => {
+    if (acceptedFiles.length) {
       setError(null);
-      setFile(selectedFile);
+      setFile(acceptedFiles[0]);
     } else {
-      setError("Please select a PDF or doc file.");
-      setFile(null);
-      event.target.value = null;
+      setError("Please select a valid PDF or DOC file.");
     }
   };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "application/pdf": [".pdf"],
+      "application/msword": [".doc"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        [".docx"],
+    },
+    maxFiles: 1,
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
 
     if (!file) {
-      setError("Please select a file first.");
+      setError("Please upload your resume file first.");
       return;
     }
 
@@ -69,13 +78,16 @@ export default function RewriteComponent() {
       a.download = fileName;
       a.click();
       window.URL.revokeObjectURL(url);
+
+      toast.success("Your rewritten resume has been downloaded!");
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message || "An error occurred while processing the file.");
-      toast.error("An error occurred please try again later.");
+      setError(
+        error.message || "An error occurred while processing your resume."
+      );
+      toast.error("An error occurred. Please try again later.");
     } finally {
       setLoading(false);
-      toast.success("File has been downloaded in your device.");
     }
   };
 
@@ -98,36 +110,48 @@ export default function RewriteComponent() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen ">
-      <div className="bg-white shadow-lg rounded-3xl p-8 w-full max-w-2xl ">
-        <h2 className="text-3xl font-sans font-bold mb-4 text-center text-gray-700">
+      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl">
+        <h2 className="text-4xl font-bold mb-6 text-center text-indigo-700">
           Resume Rewrite
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div>
             <Label
               htmlFor="file-upload"
-              className="block text-gray-700 text-lg font-semibold"
+              className="block text-gray-700 text-lg font-semibold mb-2"
             >
-              Upload PDF File
+              Upload Your Resume
             </Label>
-            <Input
-              id="file-upload"
-              type="file"
-              accept=".pdf, .doc, .docx"
-              onChange={handleFileChange}
-              disabled={loading}
-              className={`w-full border border-gray-300 p-3 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                loading ? "bg-gray-100 cursor-not-allowed" : "bg-white"
+            <div
+              {...getRootProps()}
+              className={`border-2  border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                isDragActive
+                  ? "border-indigo-500 bg-indigo-50"
+                  : "border-gray-300 bg-gray-50"
               }`}
-            />
+            >
+              <input {...getInputProps()} />
+              {file ? (
+                <p className="text-gray-700">
+                  Selected file: <strong>{file.name}</strong>
+                </p>
+              ) : isDragActive ? (
+                <p className="text-indigo-700">Drop the files here...</p>
+              ) : (
+                <p className="text-gray-500">
+                  Drag & drop your resume here, or click to select files
+                </p>
+              )}
+            </div>
+            {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
           </div>
 
-          <div className="mt-2">
+          <div>
             <Label className="block text-gray-700 text-lg font-semibold mb-2">
-              Select AI Model
+              Choose AI Model
             </Label>
             <RadioGroup value={modelOption}>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-6">
                 <label className="inline-flex items-center">
                   <input
                     type="radio"
@@ -135,7 +159,7 @@ export default function RewriteComponent() {
                     value="gemini"
                     checked={modelOption === "gemini"}
                     onChange={() => setModelOption("gemini")}
-                    className="form-radio text-indigo-500"
+                    className="form-radio text-indigo-600"
                   />
                   <span className="ml-2 text-gray-700">Google Gemini</span>
                 </label>
@@ -147,7 +171,7 @@ export default function RewriteComponent() {
                     disabled={true}
                     checked={modelOption === "chatgpt"}
                     onChange={() => setModelOption("chatgpt")}
-                    className="form-radio text-indigo-500"
+                    className="form-radio text-indigo-600"
                   />
                   <span className="ml-2 text-gray-400">ChatGPT</span>
                 </label>
@@ -155,41 +179,16 @@ export default function RewriteComponent() {
             </RadioGroup>
           </div>
 
-          {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
           <Button
             type="submit"
             disabled={loading}
-            className={`w-full py-4 text-xl font-semibold rounded-xl transition duration-300 ${
+            className={`w-full py-5 text-xl font-semibold rounded-xl transition duration-300 ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 text-white"
             }`}
           >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <svg
-                  className="animate-spin h-6 w-6 mr-3 text-white"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8H4z"
-                  ></path>
-                </svg>
-                Processing...
-              </div>
-            ) : (
-              "Generate Doc File"
-            )}
+            {loading ? <LoadingComponent /> : "Rewrite My Resume"}
           </Button>
         </form>
       </div>
