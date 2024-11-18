@@ -23,8 +23,7 @@ const downloadImage = async (url) => {
 
 export const generateDocx = async (extractedData) => {
   try {
-    const imageUrl =
-      "https://images.pexels.com/photos/27269560/pexels-photo-27269560/free-photo-of-marti.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+    const imageUrl ="https://i.ibb.co/QjCNMGX/header.png"
     ("");
     const imageBuffer = await downloadImage(imageUrl);
 
