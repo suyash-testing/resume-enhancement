@@ -24,7 +24,8 @@ const downloadImage = async (url) => {
 export const generateDocx = async (extractedData) => {
   try {
     const imageUrl =
-      "https://resume-rewrite.s3.ap-south-1.amazonaws.com/header.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIA3CMCCH62QNAYMB72%2F20241118%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20241118T102649Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEML%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiSDBGAiEA4i9Q2EQV7%2FsGy7RtEbzA4nQl0ws9Y3Zn74y2wPP%2B2dMCIQDViNDu3X1lc8V82K0%2Fr1ExbV8lMCwn8Z8B%2FKLH5Ts2uiqZAghcEAAaDDc2MTAxODg1OTQ0NSIMJ7hcysjvzrsQZfe5KvYBcMLYaIBWNDS3EBjD704nMZypsBY%2BYAhFoM27Kkfa3q0eL%2BKdpZ%2BdS%2BnudiJBgWnVqPgjvczUKwii0VurZufKVOTFeXYlMXozTfZC5eFqr0lJdjhqA4hH2XMFmPsKccOpPrpSjj5qh6txWQxQZi3e7er1cI5xPyOMePGPMOL5RbgzDEDz8PzJEQgcDyq5iIOtpo0uPm1nPanPOx0Oht0d4Ch0Xc3khgCkxL5yCkmFZ8Y%2BlhCiMw4AH0z%2B%2BfEPZPY7Q%2Ba7FwKTQ4JfiHrNPAbpbF2NEIPWDO%2FPWN6Xd7v2xdfigApu51QqkaybgmFr8cBIBE9yH94jMKSc7LkGOt4BnZWpF2dM10fEq9owPzIyzy7T2CynOivJziWmmirShH7cSvwbXj%2Baaxp%2BfsA20l8FtwNDhiyfHomaq1dI8Tl3M01j3%2Bp%2BHROsQi6kOm5PgDKaeksWexvNKrPo0zk30WxH%2FUtdT7vWVY9f5lrLu79qTp2jUniPxjkUjx%2FdBOciB%2FuTezYJeaP8NO3lFgMnhzMwNNExm%2Bb4QvPo%2BSmZcbXGtp7Wb1572UZLMQDZ%2BstiUpD5hWLyhlrT5yfGd6EgR5jV7wtrGXK3HDsIdadFgVuXC2DnKpqevZi5UY5QgtvD&X-Amz-Signature=e7cc541361bc21f73ec92220d4c6c5d6ebae5d97abdfcf548e045f125a518ed9&X-Amz-SignedHeaders=host&response-content-disposition=inline";
+      "https://images.pexels.com/photos/27269560/pexels-photo-27269560/free-photo-of-marti.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
+    ("");
     const imageBuffer = await downloadImage(imageUrl);
 
     const doc = new Document({
