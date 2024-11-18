@@ -6,8 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -34,6 +32,7 @@ export default function Dashboard({ children }) {
   };
 
   return (
+    
     <div className="grid min-h-screen w-full md:grid-cols-[250px_1fr] lg:grid-cols-[300px_1fr] bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Sidebar */}
       <div className="hidden border-r  bg-white  text-black shadow-xl md:block">

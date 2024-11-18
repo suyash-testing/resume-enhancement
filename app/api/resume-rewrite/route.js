@@ -52,7 +52,7 @@ export const POST = async (req, res) => {
 
     if (fileName.endsWith(".pdf")) {
       extractedText = await extractTextFromPDF(fileBuffer);
-    } else if (fileName.endsWith(".docx")) {
+    } else if (fileName.endsWith(".docx") || fileName.endsWith(".doc")) {
       extractedText = await extractTextFromDocx(fileBuffer);
     } else {
       return NextResponse.json(
@@ -77,11 +77,8 @@ export const POST = async (req, res) => {
       fileName: `${result?.name}_resume.docx`,
     });
   } catch (error) {
-    console.error("Error processing PDF:", error);
-    return NextResponse.json(
-      { error: "Error processing file" },
-      { status: 500 }
-    );
+    console.error("Error processing FIle:", error?.message);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 };
 
@@ -115,7 +112,7 @@ const getStructureData = async (extractedText, model) => {
         "Professional summary or organization experience"
       ],
       "technicalSkills": {{
-        //...
+        "key":"[value]"
       }},
       "workExperience": [
         {{
@@ -133,7 +130,7 @@ const getStructureData = async (extractedText, model) => {
           "project": "Project Name",
           "client": "Client Name",
           "role": "Role in Project",
-          "duration": "Duration in Months like 12 Months or 09 Months",
+          "duration": "duration in months",
           "description": "Project Description",
           "toolsUsed": ["Tool1", "Tool2"],
           "responsibilities": [
@@ -195,6 +192,7 @@ const getStructureData = async (extractedText, model) => {
 const extractTextFromPDF = async (fileBuffer) => {
   return new Promise((resolve, reject) => {
     let text = "";
+    console.log(text, "text");
     const pdfReader = new PdfReader();
 
     pdfReader.parseBuffer(fileBuffer, (err, item) => {
@@ -207,8 +205,8 @@ const extractTextFromPDF = async (fileBuffer) => {
         return resolve(text);
       }
 
-      if (item.text) {
-        text += item.text + " ";
+      if (item?.text) {
+        text += item?.text + " ";
       }
     });
   });
@@ -219,6 +217,7 @@ const extractTextFromDocx = async (fileBuffer) => {
     const result = await mammoth.extractRawText({ buffer: fileBuffer });
 
     const text = result.value;
+    console.log(text, result, "extractTextFromDocx");
 
     if (result.messages.length > 0) {
       console.log("Conversion Messages: ", result.messages);
